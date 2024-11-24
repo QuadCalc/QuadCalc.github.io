@@ -299,7 +299,6 @@ nav {
 #fungsi-kuadrat img {
     background: none; /* Menghapus latar belakang gambar */
     box-shadow: none; /* Menghapus bayangan */
-
     padding: 0; /* Menghapus jarak dalam */
     margin: 0; /* Menghapus jarak luar */
 }
