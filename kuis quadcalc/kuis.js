@@ -263,7 +263,7 @@ function showResults() {
         <h3>Kuis Selesai!</h3>
         <p>Skor Anda: ${score}/${quizData.length}</p>
         <button id="retry-button" data-href="retry">Ulangi Kuis</button>
-        <button id="index-button" data-href="../index.html">Kembali</button>
+        <button id="index-button" data-href="https://quadcalc.github.io/Index.html">Kembali</button>
     `;
 
     // Tambahkan event listener ke tombol
