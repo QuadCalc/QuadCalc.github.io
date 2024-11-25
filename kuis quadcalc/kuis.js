@@ -168,7 +168,7 @@ toggleAllSoundsButton.addEventListener('click', () => {
         audioElements.forEach(audio => {
             if (audio) audio.muted = true; // Periksa apakah elemen ada
         });
-        toggleAllSoundsButton.textContent = "🔇 Sound Effect";
+        toggleAllSoundsButton.textContent = "🔇 Sound effect";
         areAllSoundsMuted = true;
     }
 });
