@@ -70,6 +70,21 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const navbar = document.querySelector("nav");
+
+    menuToggle.addEventListener("click", () => {
+        navbar.classList.toggle("active"); // Tambah/hapus kelas active
+    });
+
+    // Tutup menu jika pengguna klik di luar navigasi
+    document.addEventListener("click", (e) => {
+        if (!navbar.contains(e.target) && e.target !== menuToggle) {
+            navbar.classList.remove("active");
+        }
+    });
+});
 
 document.addEventListener("DOMContentLoaded", () => {
     const soalButtons = document.querySelectorAll('.soal-button');
