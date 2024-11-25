@@ -416,7 +416,7 @@ audio {
 
 
 nav {
-    position: relative;
+    position: fixed;
     width: 100%;
     height: 30px;
     backdrop-filter: blur(22px);
@@ -428,64 +428,6 @@ nav {
     z-index: 2;
     transform: translateY(0);
     transition: transform 0.5s ease-in-out;
-}
-nav a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    font-size: 1rem;
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-nav a:hover {
-    color: #3498db;
-}
-
-/* Tombol menu untuk perangkat kecil */
-#menu-toggle {
-    display: none; /* Tidak terlihat di desktop */
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 2rem;
-    color: white;
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 3;
-}
-
-/* Navigasi tersembunyi untuk perangkat kecil */
-@media (max-width: 768px) {
-    #menu-toggle {
-        display: block; /* Tombol muncul di perangkat kecil */
-    }
-    @media (max-width: 768px) {
-        body {
-            padding-top: 60px; /* Beri ruang untuk navigasi */
-        }
-    }
-    
-
-    nav {
-        flex-direction: column;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.9);
-        transform: translateX(-100%); /* Navigasi tersembunyi */
-    }
-
-    nav.active {
-        transform: translateX(0); /* Navigasi muncul */
-    }
-
-    nav a {
-        margin: 20px 0; /* Spasi antar tautan */
-        font-size: 1.2rem; /* Ukuran lebih besar */
-    }
 }
 .section-divider {
     border: 0;
