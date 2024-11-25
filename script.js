@@ -512,6 +512,21 @@ function resetGraph() {
     // Fungsi menggambar grafik (memulai animasi)
     function drawGraph() {
 
+        const input = document.getElementById("functionInput").value;
+        const resultDiv = document.getElementById("result");
+    
+        
+            // Regex untuk mengekstrak koefisien a, b, dan c
+            const regex = /([+-]?\d*\.?\d*)x\^2\s*([+-]?\d*\.?\d*)x\s*([+-]?\d*\.?\d*)/;
+            const match = input.replace(/\s+/g, '').match(regex);
+    
+            if (!match) {
+                alert("Harap masukkan fungsi dalam format ax² + bx + c yang benar!");
+                button.classList.remove('loading');
+                spinner.remove();
+                return ;
+            }
+
         
     const outputDiv = document.getElementById('tampilan');
     const inputexpression = document.getElementById('functionInput').value.trim();
@@ -608,20 +623,6 @@ function resetGraph() {
 
 
 function Kalkulator() {
-    const input = document.getElementById("functionInput").value;
-    const resultDiv = document.getElementById("result");
-
-    
-        // Regex untuk mengekstrak koefisien a, b, dan c
-        const regex = /([+-]?\d*\.?\d*)x\^2\s*([+-]?\d*\.?\d*)x\s*([+-]?\d*\.?\d*)/;
-        const match = input.replace(/\s+/g, '').match(regex);
-
-        if (!match) {
-            alert("Harap masukkan fungsi dalam format ax² + bx + c yang benar!");
-            button.classList.remove('loading');
-            spinner.remove();
-            return ;
-        }
         
         const a = parseFloat(match[1]) || 1; // Default ke 1 jika tidak ada a
         const b = parseFloat(match[2]) || 0; // Default ke 0 jika tidak ada b
