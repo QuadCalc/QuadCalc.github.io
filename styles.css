@@ -429,6 +429,20 @@ nav {
     transform: translateY(0);
     transition: transform 0.5s ease-in-out;
 }
+
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        padding: 15px;
+        height: auto;
+        background: rgba(0, 0, 0, 0.8); /* Tambahkan transparansi */
+    }
+    nav a {
+        margin: 10px 0;
+        font-size: 1.2rem; /* Perbesar ukuran font */
+    }
+}
+
 .section-divider {
     border: 0;
     height: 2px;
