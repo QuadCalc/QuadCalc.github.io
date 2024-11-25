@@ -12,11 +12,12 @@
     <div class="twinkling"></div>
     <div class="aurora paused"></div>
     <div class="floating-elements"></div>
+    <div class="moon"></div>
 
     <section id="quiz-section">
-        <h2>QUIZ</h2>
+        <h2>Quiz</h2>
         <div id="quiz-container">
-            <!-- Tempat soal quiz -->
+            <!-- Tempat soal kuis -->
         </div>
         <div id="answer-feedback"></div>
         <button id="next-question">JAWAB</button>
@@ -26,8 +27,28 @@
         <div id="quiz-result"></div>
         
     </section>
+
+    <div id="volume-control-container" style="text-align: center; margin-top: 20px;">
+        <!-- Tombol kontrol musik -->
+        <button id="toggle-music">🔊 Music</button>
+        <button id="toggle-all-sounds">🔊 Sound effect</button>
+
+    
+        <!-- Slider untuk volume -->
+        <div style="margin-top: 10px;">
+            <label for="volume-control" style="color: white;">Volume:</label>
+            <input type="range" id="volume-control" min="0" max="100" step="1" value="50" disabled>
+        </div>
+        
+    </div>
+    <audio id="background-music" src="./sound/backsound.mp3" loop></audio>
+    
+    
     <audio id="sound-correct" src="./sound/benar.mp3"></audio>
     <audio id="sound-wrong" src="./sound/salah.mp3"></audio>
+    <audio id="sedih" src="./sound/sedih.mp3"></audio>
+    <audio id="HAPPY" src="./sound/HAPPY.mp3"></audio>
+    <audio id="OHHH" src="./sound/OHHH.mp3"></audio>
     <script src="kuis.js"></script>
 </body>
 </html>

@@ -5,8 +5,39 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     background: white;
+}
+
+.moon {
+    position: fixed;
+    top: 20%;
+    left: 10%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle at 30% 30%, #f6e58d, #e6cc6b 60%, #d1a054);
+    border-radius: 50%;
+    z-index: -1;
+    box-shadow: 0 0 40px rgba(249, 215, 28, 0.5);
+    overflow: hidden;
+}
+
+.moon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.2) 10%, transparent 30%) 15px 15px,
+                radial-gradient(circle, rgba(0, 0, 0, 0.25) 12%, transparent 35%) 50px 60px,
+                radial-gradient(circle, rgba(0, 0, 0, 0.18) 8%, transparent 25%) 100px 40px,
+                radial-gradient(circle, rgba(0, 0, 0, 0.3) 15%, transparent 40%) 70px 90px,
+                radial-gradient(circle, rgba(0, 0, 0, 0.1) 7%, transparent 30%) 120px 20px;
+    background-size: 150px 150px;
+    mix-blend-mode: multiply;
+    z-index: -1;
 }
 
 #quiz-container {
@@ -20,6 +51,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 400px;
     text-align: center;
+    transition: opacity 1s ease, transform 1s ease;
 }
 
 h1 {
@@ -42,12 +74,6 @@ button:hover {
     background: #0056b3;
 }
 
-#result {
-    margin-top: 20px;
-    font-size: 18px;
-    color: #28a745;
-}
-
 label {
     display: block;
     text-align: left;
@@ -66,6 +92,7 @@ input[type="radio"] {
     margin: 20px;
     text-align: center;
     border-radius: 8px;
+    opacity: 1;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -98,10 +125,55 @@ input[type="radio"] {
 }
 
 #quiz-result {
-    margin-top: 20px;
+    color: white;
     font-size: 1.2rem;
-    color: #28a745;
     text-align: center;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+#quiz-result.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+#quiz-container.show {
+    opacity: 1;
+    display: block;
+}
+
+
+.hidden {
+    opacity: 0;
+    display: none;
+}
+
+#result-gif {
+    display: none; /* GIF tersembunyi di awal */
+    max-width: 50%; /* Batasi ukuran GIF */
+    height: auto; /* Jaga proporsi */
+    margin: 20px auto; /* Jarak atas dan tengah */
+    opacity: 0;
+    transform: scale(0.8); /* Mulai lebih kecil untuk efek */
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+#result-gif.show {
+    display: block;
+    opacity: 1;
+    transform: scale(1); /* Perbesar ke ukuran penuh */
+}
+
+/* Menambahkan animasi untuk tombol yang akan muncul */
+#retry-button, #index-button {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+#retry-button.show, #index-button.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 #overlay {
@@ -285,24 +357,26 @@ input[type="radio"] {
 /* Animasi latar belakang saat jawaban benar atau salah */
 .correct {
     background-color: green; /* Hijau untuk jawaban benar */
+    border-radius: 5px;
     color: white;
     transition: background-color 0.5s ease;
 }
 
 .incorrect {
     background-color: red; /* Merah untuk jawaban salah */
+    border-radius: 5px;
     color: white;
     transition: background-color 0.5s ease;
 }
 
 .correct-option {
-    border: 2px solid black;
-    padding: 5px;
+    border: 3px solid black;
+    padding: 3px;
     border-radius: 5px;
 }
 
 .wrong-option {
-    border: 2px solid black;
+    border: 3px solid black;
     padding: 5px;
     border-radius: 5px;
 }
@@ -318,37 +392,25 @@ input[type="radio"] {
     font-size: large;
 }
 
-.icon-correct {
-    color: white; /* Icon berwarna putih */
-    animation: bounce 0.5s ease;
+.correct {
+    animation: bounce 0.5s ease-in-out;
 }
 
-.icon-wrong {
-    color: white; /* Icon berwarna putih */
-    animation: shake 0.5s ease;
+.incorrect {
+    animation: shake 0.5s ease-in-out;
 }
 
 /* Animasi bounce untuk centang */
 @keyframes bounce {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
 /* Animasi shake untuk silang */
 @keyframes shake {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    25% {
-        transform: translateX(-5px);
-    }
-    75% {
-        transform: translateX(5px);
-    }
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-10px); }
+    40%, 80% { transform: translateX(10px); }
 }
 
 .loading-spinner {
@@ -380,4 +442,85 @@ input[type="radio"] {
 
 #continue-button:hover {
     background-color: #0056b3; /* Abu gelap lebih pekat */
+}
+
+.result-high {
+    color: #28a745; /* Hijau untuk skor tinggi */
+}
+
+.result-medium {
+    color: #ffc107; /* Kuning untuk skor sedang */
+}
+
+.result-low {
+    color: #dc3545; /* Merah untuk skor rendah */
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aurora, .stars, .twinkling {
+        animation: none;
+    }
+}
+
+/* Media query untuk layar dengan lebar maksimum 768px (ponsel dan tablet kecil) */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column; /* Ubah tata letak menjadi vertikal */
+        padding: 10px; /* Tambahkan sedikit padding */
+        height: auto; /* Sesuaikan tinggi halaman */
+    }
+
+    .quiz-container {
+        width: 100%; /* Lebar penuh layar */
+        padding: 15px; /* Kurangi padding untuk layar kecil */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Kurangi bayangan */
+    }
+
+    h1, h2 {
+        font-size: 20px; /* Ukuran font lebih kecil */
+    }
+
+    button {
+        padding: 10px 15px; /* Sesuaikan ukuran tombol */
+        font-size: 14px; /* Ukuran font tombol lebih kecil */
+    }
+
+    label {
+        font-size: 14px; /* Ukuran font label lebih kecil */
+    }
+
+    input[type="radio"] {
+        transform: scale(1.2); /* Perbesar radio button untuk layar sentuh */
+    }
+
+    #quiz-section {
+        padding: 10px; /* Kurangi padding di bagian kuis */
+    }
+
+    #quiz-result {
+        font-size: 16px; /* Ukuran font lebih kecil */
+    }
+
+    /* Atur ulang tombol untuk lebih pas */
+    #next-question, #continue-button, #retry-button, #index-button {
+        font-size: 14px;
+        width: 100%; /* Lebar penuh untuk layar kecil */
+        margin: 10px 0; /* Jarak antar tombol */
+    }
+
+    #loading-spinner {
+        margin: 10px auto;
+    }
+
+    /* Tampilkan tombol kontrol musik secara rapi */
+    #toggle-music {
+        font-size: 14px;
+        width: auto; /* Ukuran sesuai konten */
+        margin-top: 10px;
+    }
+
+    /* Slider volume */
+    #volume-control {
+        width: 100%; /* Lebar slider penuh pada layar kecil */
+    }
 }

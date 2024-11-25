@@ -12,10 +12,6 @@
 </head>
 
 <body>
-    <script src="https://unpkg.com/smoothscroll-polyfill@0.4.4/dist/smoothscroll.min.js"></script>
-    <script>
-        smoothscroll.polyfill(); // Memastikan polyfill diterapkan
-    </script>
     <script src="script.js" defer></script>
 
     <div id="overlay">
@@ -31,6 +27,33 @@
     <div class="stars"></div>
     <div class="twinkling"></div>
     <div class="aurora paused"></div>
+    <div class="solar-system">
+        <!-- Matahari -->
+        <div class="sun"></div>
+
+        <!-- Orbit dan Planet -->
+        <div class="orbit mercury">
+            <div class="planet mercury"></div>
+        </div>
+        <div class="orbit venus">
+            <div class="planet venus"></div>
+        </div>
+        <div class="orbit earth">
+            <div class="planet earth"></div>
+        </div>
+        <div class="orbit mars">
+            <div class="planet mars"></div>
+        </div>
+        <div class="orbit jupiter">
+            <div class="planet jupiter"></div>
+        </div>
+        <div class="orbit saturn">
+            <div class="planet saturn"></div>
+        </div>
+    </div>
+
+    <!-- Konten lainnya -->
+    <div class="content"></div>
 
 
 

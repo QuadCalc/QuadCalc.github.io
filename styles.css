@@ -47,7 +47,147 @@ audio {
     display: none;
 }
 
+/* Tata Surya */
+.solar-system {
+    position: fixed;
+    z-index: -2;
+    top: 20%;
+    left: 20%;
+    width: 400vh;
+    height: 200vh;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+}
 
+/* Matahari */
+.sun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10vw;
+    height: 10vw;
+    background: radial-gradient(circle at 30% 30%, #f39c12, #e74c3c, #e67e22);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8vw 4vw rgba(243, 156, 18, 0.8);
+    animation: pulse 3s infinite;
+}
+
+/* Efek matahari berdenyut */
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 8vw 4vw rgba(243, 156, 18, 0.8);
+    }
+    50% {
+        box-shadow: 0 0 10vw 5vw rgba(243, 156, 18, 1);
+    }
+}
+
+/* Orbit */
+.orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border: 0.1vw solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin linear infinite;
+}
+
+/* Orbit Animasi */
+@keyframes spin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Planet */
+.planet {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    width: 2vw;
+    height: 2vw;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 1vw rgba(255, 255, 255, 0.5);
+}
+
+/* Planet dengan rincian spesifik */
+.orbit.mercury {
+    width: 15vw;
+    height: 15vw;
+    animation-duration: 5s;
+}
+.planet.mercury {
+    background: radial-gradient(circle, #b5b5b5, #888888, #666666);
+}
+
+.orbit.venus {
+    width: 22vw;
+    height: 22vw;
+    animation-duration: 8s;
+}
+.planet.venus {
+    background: radial-gradient(circle, #d35400, #e67e22, #ba4a00);
+}
+
+.orbit.earth {
+    width: 30vw;
+    height: 30vw;
+    animation-duration: 10s;
+}
+.planet.earth {
+    background: radial-gradient(circle, #3498db, #2980b9, #1f6399);
+    box-shadow: 0 0 1.5vw rgba(52, 152, 219, 0.7);
+}
+
+.orbit.mars {
+    width: 40vw;
+    height: 40vw;
+    animation-duration: 15s;
+}
+.planet.mars {
+    background: radial-gradient(circle, #e74c3c, #c0392b, #a93226);
+}
+
+.orbit.jupiter {
+    width: 55vw;
+    height: 55vw;
+    animation-duration: 20s;
+}
+.planet.jupiter {
+    width: 5vw;
+    height: 5vw;
+    background: radial-gradient(circle, #e67e22, #d35400, #a04000);
+}
+
+.orbit.saturn {
+    width: 70vw;
+    height: 70vw;
+    animation-duration: 25s;
+}
+.planet.saturn {
+    width: 4.5vw;
+    height: 4.5vw;
+    background: radial-gradient(circle, #f5c471, #d4a053, #b37e39);
+}
+
+/* Cincin Saturnus */
+.planet.saturn::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8vw;
+    height: 2vw;
+    border: 0.2vw solid rgba(245, 196, 113, 0.6);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+}
 
 
 #explore-container {
@@ -137,7 +277,7 @@ audio {
     background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%),
         radial-gradient(circle, rgba(255, 0, 255, 0.1) 20%, rgba(0, 0, 0, 0) 80%);
     animation: auroraAnimation 8s infinite alternate ease-in-out;
-    z-index: -1;
+    z-index: -2;
     /* Di bawah konten */
 }
 
@@ -254,7 +394,7 @@ audio {
         radial-gradient(15px 15px at 50% 40%, rgba(255, 255, 255, 0.9), transparent),
         radial-gradient(20px 20px at 70% 80%, rgba(255, 255, 255, 0.95), transparent),
         radial-gradient(25px 25px at 90% 10%, rgba(255, 255, 255, 1), transparent);
-    z-index: -1;
+    z-index: -2;
     /* Di atas bintang */
 }
 
