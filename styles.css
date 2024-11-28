@@ -1163,15 +1163,6 @@ footer {
         font-size: 1.2rem;
     }
 
-    /* Gaya untuk bagian overlay */
-    #overlay {
-        padding: 10px;
-    }
-
-    #explore-container {
-        padding-top: 50px;
-    }
-
     .logoquadcalc {
         max-width: 200px; /* Ukuran logo lebih kecil */
         margin-bottom: 10px;
