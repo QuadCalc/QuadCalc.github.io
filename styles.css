@@ -1266,7 +1266,18 @@ footer {
         font-size: 0.8rem; /* Teks lebih kecil untuk hasil */
     }
 
-    .logoabout {
-        gap: 5px;
+    .about-logo {
+       width: 100px;
+       height: auto;
+    }
+
+    .about-logo2 {
+        width: 140px;
+        height: auto;
+     }
+    
+    .separator {
+        height: 150px; /* Tinggi garis */
+        margin-left: 10px;
     }
 }
