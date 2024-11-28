@@ -3,6 +3,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const exploreButton = document.getElementById('explore-button');
     const header = document.querySelector('header');
 
+    const openingSound = document.getElementById("openingSound");
+
+    if (openingSound) {
+        document.addEventListener("click", () => {
+            openingSound.play().catch((err) => console.warn('Audio tidak bisa diputar:', err));
+        }, { once: true });
+    }
+
     if (!overlay || !exploreButton || !header) {
         console.error('Required elements are missing in the DOM.');
         return;
@@ -17,144 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
         startHeaderAnimation();
         activateOtherAnimations();
     });
-
-    function hideOverlay() {
-        overlay.style.opacity = '0'; // Efek transisi
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            document.body.style.overflow = ''; // Aktifkan scroll kembali
-        }, 500);
-    }
-
-    function startHeaderAnimation() {
-        header.classList.remove('header-paused');
-        header.classList.add('header-running');
-    }
-
-    function activateOtherAnimations() {
-        document.querySelectorAll('.paused').forEach((el) => {
-            el.classList.remove('paused');
-        });
-    }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    // Sembunyikan semua soal kecuali soal pertama
-    const soalElements = document.querySelectorAll('.soal');
-    soalElements.forEach((soal, index) => {
-        soal.style.display = index === 0 ? 'block' : 'none';
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const functionInput = document.getElementById('functionInput');
-    if (functionInput) {
-        functionInput.value = ''; // Set input value to empty string
-    }
-});
-document.addEventListener("DOMContentLoaded", () => {
-    const openingSound = document.getElementById("openingSound");
-
-    // Coba memutar suara saat halaman selesai dimuat
-    if (openingSound) {
-        openingSound.volume = 0.5; // Atur volume (0.0 - 1.0)
-        openingSound.play().catch((error) => {
-            console.warn("Autoplay dibatasi oleh browser:", error);
-
-            // Jika autoplay dibatasi, coba setelah interaksi pengguna
-            document.addEventListener("click", () => {
-                openingSound.play().catch((error) => {
-                    console.error("Gagal memutar suara:", error);
-                });
-            }, { once: true });
-        });
-    }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const soalButtons = document.querySelectorAll('.soal-button');
-    soalButtons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            // Hapus kelas "active" dari semua tombol
-            soalButtons.forEach(btn => btn.classList.remove('active'));
-
-            // Tambahkan kelas "active" ke tombol yang diklik
-            button.classList.add('active');
-
-            // Tampilkan soal yang sesuai
-            showSoal(index + 1);
-        });
-    });
-});
-function showSoal(soalNumber) {
-    const soalElements = document.querySelectorAll('.soal');
-    soalElements.forEach((soal) => {
-        soal.style.display = 'none';
-    });
-
-    const selectedSoal = document.getElementById(`soal-${soalNumber}`);
-    if (selectedSoal) {
-        selectedSoal.style.display = 'block';
-    }
-}
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const functionInput = document.getElementById('functionInput');
-    if (functionInput) {
-        functionInput.value = ''; // Set input value to empty string
-    }
-});
-document.addEventListener("DOMContentLoaded", () => {
-    const overlay = document.getElementById('overlay');
-    const exploreButton = document.getElementById('explore-button');
-    const header = document.querySelector('header');
-    const homeSection = document.getElementById('home');
-
-    if (!overlay || !exploreButton || !header) {
-        console.error('Required elements are missing in the DOM.');
-        return;
-    }
-
-    // Nonaktifkan scrolling
-    disableScroll();
-
-    // Nonaktifkan tombol Explore selama animasi masuk overlay
-    disableButton(exploreButton);
-
-    // Aktifkan tombol Explore setelah overlay selesai tampil
-    setTimeout(() => {
-        enableButton(exploreButton);
-    }, 500); // Sesuaikan durasi dengan animasi masuk overlay
-
-    // Tambahkan event listener ke tombol Explore
-    exploreButton.addEventListener('click', onExploreButtonClick);
-
-    // Jika tombol Explore sudah pernah diklik, posisikan halaman langsung ke home
-    if (sessionStorage.getItem("exploreClicked")) {
-        showHome(); // Pastikan langsung ke elemen home
-    } else {
-        showOverlay(); // Tampilkan overlay jika belum pernah klik Explore
-    }
-    
-    // === Fungsi Utama ===
-    function disableScroll() {
-        document.body.style.overflow = 'hidden';
-    }
-
-    function enableScroll() {
-        document.body.style.overflow = '';
-    }
-
-    function disableButton(button) {
-        button.style.pointerEvents = 'none'; // Nonaktifkan klik
-        button.style.opacity = '0.6'; // Feedback visual (opsional)
-    }
-
-    function enableButton(button) {
-        button.style.pointerEvents = ''; // Aktifkan klik
-        button.style.opacity = '1'; // Kembalikan tampilan normal
-    }
 
     function hideOverlay() {
         disableButton(exploreButton); // Nonaktifkan tombol selama overlay menghilang
@@ -182,6 +52,73 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+    const navbar = document.getElementById('navbar');
+
+    // Klik tombol hamburger
+    menuToggle.addEventListener('click', (event) => {
+        event.stopPropagation(); // Mencegah event klik menyebar ke dokumen
+        navLinks.classList.toggle('nav-open'); // Animasi buka/tutup tirai
+        menuToggle.classList.toggle('active'); // Transformasi tombol menjadi "X"
+    });
+
+    // Klik di mana saja pada dokumen
+    document.addEventListener('click', (event) => {
+        // Jika klik tidak pada navbar atau tombol, tutup navbar
+        if (!navbar.contains(event.target)) {
+            navLinks.classList.remove('nav-open');
+            menuToggle.classList.remove('active');
+        }
+    });
+
+    const homeSection = document.getElementById('home');
+
+    if (!overlay || !exploreButton || !header) {
+        console.error('Required elements are missing in the DOM.');
+        return;
+    }
+
+    // Nonaktifkan scrolling
+    disableScroll();
+
+    // Nonaktifkan tombol Explore selama animasi masuk overlay
+    disableButton(exploreButton);
+
+    // Aktifkan tombol Explore setelah overlay selesai tampil
+    setTimeout(() => {
+        enableButton(exploreButton);
+    }, 500); // Sesuaikan durasi dengan animasi masuk overlay
+
+    // Tambahkan event listener ke tombol Explore
+    exploreButton.addEventListener('click', onExploreButtonClick);
+
+    // Jika tombol Explore sudah pernah diklik, posisikan halaman langsung ke home
+    if (sessionStorage.getItem("exploreClicked")) {
+        showHome(); // Pastikan langsung ke elemen home
+    } else {
+        showOverlay(); // Tampilkan overlay jika belum pernah klik Explore
+    }
+
+    // === Fungsi Utama ===
+    function disableScroll() {
+        document.body.style.overflow = 'hidden';
+    }
+
+    function enableScroll() {
+        document.body.style.overflow = '';
+    }
+
+    function disableButton(button) {
+        button.style.pointerEvents = 'none'; // Nonaktifkan klik
+        button.style.opacity = '0.6'; // Feedback visual (opsional)
+    }
+
+    function enableButton(button) {
+        button.style.pointerEvents = ''; // Aktifkan klik
+        button.style.opacity = '1'; // Kembalikan tampilan normal
+    }
+
     function showHome() {
         // Pastikan tampilan langsung di bagian home
         const homePosition = homeSection.getBoundingClientRect().top + window.scrollY;
@@ -201,15 +138,62 @@ document.addEventListener("DOMContentLoaded", () => {
             enableButton(exploreButton);
         }, 500); // Durasi animasi keluar overlay
     }
-});
 
+    const Tombolkuis = document.getElementById("tombol-kuis");
 
-
-document.addEventListener('DOMContentLoaded', function () {
-    if (typeof smoothscroll !== 'undefined') {
-        smoothscroll.polyfill();
+    if (Tombolkuis) {
+        Tombolkuis.addEventListener("click", () => {
+            window.location.href = "./kuis quadcalc/kuis.html"; // Ganti dengan path file kuiz Anda
+        });
     }
+
+    const soalElements = document.querySelectorAll('.soal');
+    soalElements.forEach((soal, index) => {
+        soal.style.display = index === 0 ? 'block' : 'none';
+    });
+
+    const functionInput = document.getElementById('functionInput');
+    if (functionInput) {
+        functionInput.value = ''; // Set input value to empty string
+    }
+
+    const soalButtons = document.querySelectorAll('.soal-button');
+    soalButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            // Hapus kelas "active" dari semua tombol
+            soalButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Tambahkan kelas "active" ke tombol yang diklik
+            button.classList.add('active');
+
+            // Tampilkan soal yang sesuai
+            showSoal(index + 1);
+        });
+    });
+
+
 });
+
+if (functionInput) {
+    functionInput.value = ''; // Set input value to empty string
+    functionInput.placeholder = 'ax^2 + bx + c';
+}
+
+function showSoal(soalNumber) {
+    const soalElements = document.querySelectorAll('.soal');
+    soalElements.forEach((soal) => {
+        soal.style.display = 'none';
+    });
+
+    const selectedSoal = document.getElementById(`soal-${soalNumber}`);
+    if (selectedSoal) {
+        selectedSoal.style.display = 'block';
+    }
+}
+
+if (functionInput) {
+    functionInput.value = ''; // Set input value to empty string
+}
 
 
 const navbar = document.getElementById("navbar");
@@ -285,24 +269,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const Tombolkuis = document.getElementById("tombol-kuis");
-
-    if (Tombolkuis) {
-        Tombolkuis.addEventListener("click", () => {
-            window.location.href = "./kuis quadcalc/kuis.html"; // Ganti dengan path file kuiz Anda
-        });
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const functionInput = document.getElementById('functionInput');
-    if (functionInput) {
-        functionInput.value = ''; // Set input value to empty string
-        functionInput.placeholder = 'ax^2 + bx + c';
-    }
-});
-
 function resetGraph() {
     // Ambil elemen input, output, dan canvas
     const inputField = document.getElementById('functionInput');
@@ -349,45 +315,35 @@ function resetGraph() {
 }
 
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    const canvas = document.getElementById('grafikCanvas');
-    const ctx = canvas.getContext('2d');
-    const coordinatesDiv = document.getElementById('coordinates');
-    const width = canvas.width;
-    const height = canvas.height;
-   
-    let originX = width / 2;
-    let originY = height / 2;
-    let roots = [];
-    let yIntercept = null;
-    let peaks = [];
-    let compiledFunction = null;
-    let animationX = -10; // Awal dari animasi
+const canvas = document.getElementById('grafikCanvas');
+const ctx = canvas.getContext('2d');
+const coordinatesDiv = document.getElementById('coordinates');
+const width = canvas.width;
+const height = canvas.height;
 
-    // Variabel untuk dragging
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let originOffsetX = 0;
-    let originOffsetY = 0;
+let originX = width / 2;
+let originY = height / 2;
+let roots = [];
+let yIntercept = null;
+let peaks = [];
+let compiledFunction = null;
+let animationX = -10; // Awal dari animasi
 
-    let scale = 20; // Skala awal
-    const minScale = 10; // Skala minimum untuk zoom out
-    const maxScale = 100; // Skala maksimum untuk zoom in
-    
+// Variabel untuk dragging
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let originOffsetX = 0;
+let originOffsetY = 0;
 
-    // Fungsi menggambar sumbu
-  // Fungsi menggambar sumbu
-  function drawAxes() {
+let scale = 40; // Skala awal
+const minScale = 3; // Skala minimum untuk zoom out
+const maxScale = 99; // Skala maksimum untuk zoom in
+
+
+// Fungsi menggambar sumbu
+// Fungsi menggambar sumbu
+function drawAxes() {
     ctx.clearRect(0, 0, width, height); // Bersihkan canvas
 
     // Warna grid
@@ -396,10 +352,13 @@ function resetGraph() {
 
     // Tentukan interval grid berdasarkan skala
     let baseInterval = 1;
-    if (scale < 20) baseInterval = 5; // Interval lebih besar untuk skala kecil
-    else if (scale > 50) baseInterval = 0.5; // Interval lebih kecil untuk skala besar
-
-    // Range yang terlihat berdasarkan skala dan offset
+    
+    if (scale < 4) baseInterval = 20; // Interval lebih besar untuk skala kecil
+    else if (scale < 10) baseInterval = 10;
+    else if (scale < 20) baseInterval = 5;
+    else if (scale < 40) baseInterval = 2;
+    else if (scale < 80) baseInterval = 1;
+    else if (scale < 100) baseInterval = 0.5;
     const startX = Math.floor((-originX - originOffsetX) / scale);
     const endX = Math.ceil((width - originX - originOffsetX) / scale);
     const startY = Math.floor((originY + originOffsetY - height) / scale);
@@ -459,84 +418,90 @@ function resetGraph() {
 }
 
 
-      
-        
-    
-    
-    
-    
+// Fungsi menggambar grafik dengan animasi
+// Fungsi menggambar grafik dengan animasi
+function animateGraph() {
+    ctx.clearRect(0, 0, width, height); // Bersihkan canvas
+    drawAxes(); // Gambar sumbu, mempertimbangkan offset
 
-    // Fungsi menggambar grafik dengan animasi
-    function animateGraph() {
-        ctx.clearRect(0, 0, width, height);
-        drawAxes(); // Pastikan offset diperhitungkan di sini
-    
-        // Gambar kurva sampai titik animasiX
-        ctx.strokeStyle = '#00ffff';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        let started = false;
-    
-        for (let x = -10; x <= animationX; x += 0.1) {
-            const y = compiledFunction.evaluate({ x });
-            const canvasX = originX + originOffsetX + x * scale;
-            const canvasY = originY + originOffsetY - y * scale;
-    
-            if (!started) {
-                ctx.moveTo(canvasX, canvasY);
-                started = true;
-            } else {
-                ctx.lineTo(canvasX, canvasY);
-            }
-        }
-        ctx.stroke();
-    
-        // Perbarui posisi animasi
-        if (animationX < 10) {
-            animationX += 0.1;
-            requestAnimationFrame(animateGraph); // Lanjutkan animasi
+    // Tentukan rentang dinamis berdasarkan skala dan posisi
+    const startX = Math.floor((-originX - originOffsetX) / scale); // Rentang X mulai
+    const endX = Math.ceil((width - originX - originOffsetX) / scale); // Rentang X berakhir
+
+    // Gambar kurva sampai titik animasiX
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    let started = false;
+
+    for (let x = startX; x <= animationX && x <= endX; x += 0.05) { // Sesuaikan interval x sesuai dengan skala
+        const y = compiledFunction.evaluate({ x });
+        const canvasX = originX + originOffsetX + x * scale;
+        const canvasY = originY + originOffsetY - y * scale;
+
+        if (!started) {
+            ctx.moveTo(canvasX, canvasY);
+            started = true;
         } else {
-            // Setelah selesai, tambahkan titik potong dan titik puncak
-            drawRoots(roots);
-            drawYIntercept(yIntercept);
-            drawPeaks(peaks);
-
-            const resetButton = document.getElementById('resetButton');
-            resetButton.style.display = 'inline-block'; // Tampilkan tombol reset
+            ctx.lineTo(canvasX, canvasY);
         }
     }
+    ctx.stroke();
 
-    let lastInputExpression = "";
-    
+    // Perbarui posisi animasi
+    if (animationX < endX) {
+        animationX += 0.1; // Tingkatkan posisi animasi
+        requestAnimationFrame(animateGraph); // Lanjutkan animasi
+    } else {
+        // Setelah selesai, tambahkan titik potong dan titik puncak
+        drawRoots(roots);
+        drawYIntercept(yIntercept);
+        drawPeaks(peaks);
 
-    // Fungsi menggambar grafik (memulai animasi)
-    function drawGraph() {
+        const resetButton = document.getElementById('resetButton');
+        resetButton.style.display = 'inline-block'; // Tampilkan tombol reset
+    }
+}
 
-        const input = document.getElementById("functionInput").value;
-        const resultDiv = document.getElementById("result");
-    
-        
-            // Regex untuk mengekstrak koefisien a, b, dan c
-            const regex = /([+-]?\d*\.?\d*)x\^2\s*([+-]?\d*\.?\d*)x\s*([+-]?\d*\.?\d*)/;
-            const match = input.replace(/\s+/g, '').match(regex);
-    
-            if (!match) {
-                alert("Harap masukkan fungsi dalam format ax² + bx + c yang benar!");
-                button.classList.remove('loading');
-                spinner.remove();
-                return ;
-            }
+let lastInputExpression = "";
 
-        
+
+
+
+// Fungsi menggambar grafik (memulai animasi)
+function drawGraph() {
+
+    const input = document.getElementById("functionInput").value;
+    const resultDiv = document.getElementById("result");
     const outputDiv = document.getElementById('tampilan');
     const inputexpression = document.getElementById('functionInput').value.trim();
-    
-    if(inputexpression === ''){
+
+    if (inputexpression === '') {
         outputDiv.style.display = 'none';
         alert("Harap masukkan fungsi terlebih dahulu!");
         return;
     }
-    else if (inputexpression === lastInputExpression) {
+
+    // Regex utama untuk format fungsi kuadrat
+    const regex = /([+-]?\d*\.?\d*)x\^2(?:\s*([+-]?\d*\.?\d*)x)?(?:\s*([+-]?\d*\.?\d*))?/;
+
+    // Regex untuk mendeteksi pola salah seperti '2x2'
+    const invalidPatternRegex = /\d+x\d+|x\^\d{2,}/;
+
+    // Hilangkan spasi dari input
+    const cleanedInput = input.replace(/\s+/g, '');
+    const match = cleanedInput.match(regex);
+
+    // Validasi pola salah terlebih dahulu
+    if (invalidPatternRegex.test(cleanedInput) || !match) {
+        alert("Harap masukkan fungsi dalam format ax² + bx + c yang benar!");
+        button.classList.remove('loading');
+        spinner.remove();
+        return;
+    }
+
+
+    if (inputexpression === lastInputExpression) {
         alert("Hasil perhitungan dari fungsi tersebut telah ditampilkan, Harap masukkan fungsi yang berbeda!");
         return;
     }
@@ -565,7 +530,7 @@ function resetGraph() {
 
         button.classList.add('loading');
 
-        
+
         outputDiv.style.display = 'block';
         outputDiv.style.opacity = 0;
 
@@ -583,274 +548,324 @@ function resetGraph() {
 
 
 
-        // Reset posisi animasi
-        animationX = -10;
-    
-        // Ambil ekspresi fungsi
-        const inputExpression = document.getElementById('functionInput').value;
-    
-        // Kompilasi fungsi
-        try {
-            compiledFunction = math.compile(inputExpression);
-        } catch (error) {
-            alert("Ekspresi fungsi tidak valid!");
-            return;
-        }
-    
-        // Temukan akar, titik potong y, dan titik puncak
-        roots = findRoots(compiledFunction);
-        yIntercept = findYIntercept(compiledFunction);
-        peaks = findPeaks(math.derivative(inputExpression, 'x'));
+    // Reset posisi animasi
+    animationX = -10;
 
-           // Pastikan y-intercept ada untuk fokus grafik
-           const yInterceptValue = yIntercept !== null ? yIntercept : 0;
-    
-           // Atur posisi agar fokus pada titik potong y
-           originOffsetX = 0; // Karena kita ingin x = 0 di tengah layar
-           originOffsetY = yInterceptValue * scale; // Fokuskan 
+    // Ambil ekspresi fungsi
+    const inputExpression = document.getElementById('functionInput').value;
 
-    
-        // Mulai animasi
-   // Mulai animasi
-   setTimeout(() => {
-    animateGraph();
+    // Kompilasi fungsi
+    try {
+        compiledFunction = math.compile(inputExpression);
+    } catch (error) {
+        alert("Ekspresi fungsi tidak valid!");
+        return;
+    }
 
-    // Hapus animasi dari tombol setelah beberapa saat
-    button.classList.remove('loading');
-    spinner.remove();
-}, 1000);
+    // Temukan akar, titik potong y, dan titik puncak
+    roots = findRoots(compiledFunction);
+    yIntercept = findYIntercept(compiledFunction);
+    peaks = findPeaks(math.derivative(inputExpression, 'x'));
+
+    // Pastikan y-intercept ada untuk fokus grafik
+    const yInterceptValue = yIntercept !== null ? yIntercept : 0;
+
+    // Atur posisi agar fokus pada titik potong y
+    originOffsetX = 0; // Karena kita ingin x = 0 di tengah layar
+    originOffsetY = yInterceptValue * scale; // Fokuskan 
 
 
+    // Mulai animasi
+    // Mulai animasi
+    setTimeout(() => {
+        animateGraph();
 
-function Kalkulator() {
-        
+        // Hapus animasi dari tombol setelah beberapa saat
+        button.classList.remove('loading');
+        spinner.remove();
+    }, 1000);
+
+
+
+    function Kalkulator() {
+
         const a = parseFloat(match[1]) || 1; // Default ke 1 jika tidak ada a
         const b = parseFloat(match[2]) || 0; // Default ke 0 jika tidak ada b
         const c = parseFloat(match[3]) || 0; // Default ke 0 jika tidak ada c
 
         const D = b * b - 4 * a * c;
         let solusi = "";
-        
-    setTimeout(() => {
-        solusi += `<p>Langkah Penyelesaian:</p>`;
-        solusi += `<p>1. Hitung diskriminan: D = b² - 4ac</p>`;
-        solusi += `<p>&emsp; D = ${b}² - 4 * ${a} * ${c}</p>`;
-        solusi += `<p>&emsp; D = ${D}</p>`;
 
-        const x_v = -b / (2 * a);
-        const y_v = a * x_v * x_v + b * x_v + c;
-        solusi += `<p>2. Titik balik (vertex) dari fungsi kuadrat adalah: (${x_v.toFixed(2)}, ${y_v.toFixed(2)})</p>`;
+        setTimeout(() => {
+            solusi += `<p>Langkah Penyelesaian:</p>`;
+            solusi += `<p>1. Hitung diskriminan: D = b² - 4ac</p>`;
+            solusi += `<p>&emsp; D = ${b}² - 4 * ${a} * ${c}</p>`;
+            solusi += `<p>&emsp; D = ${D}</p>`;
 
-        if (D > 0) {
-            const x1 = (-b + Math.sqrt(D)) / (2 * a);
-            const x2 = (-b - Math.sqrt(D)) / (2 * a);
-            solusi += "<p>3. Karena D > 0, persamaan memiliki dua akar nyata:</p>";
-            solusi += `<p>&emsp; x₁ = (-b + √D) / 2a = (${-b} + √${D}) / ${2 * a} = ${x1.toFixed(2)}</p>`;
-            solusi += `<p>&emsp; x₂ = (-b - √D) / 2a = (${-b} - √${D}) / ${2 * a} = ${x2.toFixed(2)}</p>`;
-            solusi += `<p>Jadi, akar-akar persamaan adalah x₁ = ${x1.toFixed(2)} dan x₂ = ${x2.toFixed(2)}</p>`;
-        } else if (D === 0) {
-            const x = -b / (2 * a);
-            solusi += "<p>3. Karena D = 0, persamaan memiliki satu akar:</p>";
-            solusi += `<p>&emsp; x = -b / 2a = ${-b} / ${2 * a} = ${x.toFixed(2)}</p>`;
-        } else {
-            solusi += "<p>3. Karena D < 0, persamaan tidak memiliki akar real.</p>";
-        }
+            const x_v = -b / (2 * a);
+            const y_v = a * x_v * x_v + b * x_v + c;
+            solusi += `<p>2. Titik balik (vertex) dari fungsi kuadrat adalah: (${x_v.toFixed(2)}, ${y_v.toFixed(2)})</p>`;
 
-        resultDiv.innerHTML = solusi; // Pastikan menampilkan solusi di sini
-        resultDiv.style.display = "block";
-    }, 1000);
-
-} Kalkulator();
-    }
-
-    function calculateFunctionRange(func, minX, maxX, step) {
-        let minY = Number.POSITIVE_INFINITY;
-        let maxY = Number.NEGATIVE_INFINITY;
-        let minXPoint = minX;
-        let maxXPoint = maxX;
-
-        for (let x = minX; x <= maxX; x += step) {
-            const y = func.evaluate({ x });
-            if (y < minY) {
-                minY = y;
-                minXPoint = x;
+            if (D > 0) {
+                const x1 = (-b + Math.sqrt(D)) / (2 * a);
+                const x2 = (-b - Math.sqrt(D)) / (2 * a);
+                solusi += "<p>3. Karena D > 0, persamaan memiliki dua akar nyata:</p>";
+                solusi += `<p>&emsp; x₁ = (-b + √D) / 2a = (${-b} + √${D}) / ${2 * a} = ${x1.toFixed(2)}</p>`;
+                solusi += `<p>&emsp; x₂ = (-b - √D) / 2a = (${-b} - √${D}) / ${2 * a} = ${x2.toFixed(2)}</p>`;
+                solusi += `<p>Jadi, akar-akar persamaan adalah x₁ = ${x1.toFixed(2)} dan x₂ = ${x2.toFixed(2)}</p>`;
+            } else if (D === 0) {
+                const x = -b / (2 * a);
+                solusi += "<p>3. Karena D = 0, persamaan memiliki satu akar:</p>";
+                solusi += `<p>&emsp; x = -b / 2a = ${-b} / ${2 * a} = ${x.toFixed(2)}</p>`;
+            } else {
+                solusi += "<p>3. Karena D < 0, persamaan tidak memiliki akar real.</p>";
             }
-            if (y > maxY) {
-                maxY = y;
-                maxXPoint = x;
-            }
+
+            resultDiv.innerHTML = solusi; // Pastikan menampilkan solusi di sini
+            resultDiv.style.display = "block";
+        }, 1000);
+
+    } Kalkulator();
+}
+
+function calculateFunctionRange(func, minX, maxX, step) {
+    let minY = Number.POSITIVE_INFINITY;
+    let maxY = Number.NEGATIVE_INFINITY;
+    let minXPoint = minX;
+    let maxXPoint = maxX;
+
+    for (let x = minX; x <= maxX; x += step) {
+        const y = func.evaluate({ x });
+        if (y < minY) {
+            minY = y;
+            minXPoint = x;
         }
-
-        return {
-            minX: minXPoint,
-            maxX: maxXPoint,
-            minY,
-            maxY,
-        };
-    }
-    
-
-    // Temukan akar
-    function findRoots(compiledFunction) {
-        const roots = [];
-        for (let x = -10; x <= 10; x += 0.1) {
-            const y1 = compiledFunction.evaluate({ x });
-            const y2 = compiledFunction.evaluate({ x: x + 0.1 });
-            if (y1 * y2 < 0) {
-                roots.push(x);
-            }
+        if (y > maxY) {
+            maxY = y;
+            maxXPoint = x;
         }
-        return roots;
     }
 
-    // Temukan titik potong y
-    function findYIntercept(compiledFunction) {
-        return compiledFunction.evaluate({ x: 0 });
-    }
+    return {
+        minX: minXPoint,
+        maxX: maxXPoint,
+        minY,
+        maxY,
+    };
+}
 
-    // Temukan titik puncak
-    function findPeaks(derivativeFunction) {
-        const peaks = [];
-        for (let x = -10; x <= 10; x += 0.1) {
-            const slope1 = derivativeFunction.evaluate({ x });
-            const slope2 = derivativeFunction.evaluate({ x: x + 0.1 });
-            if (slope1 * slope2 < 0) {
-                const peakX = x + (slope1 / (slope1 - slope2)) * 0.1;
-                const peakY = compiledFunction.evaluate({ x: peakX });
-                peaks.push({ x: peakX, y: peakY });
-            }
+
+// Temukan akar
+function findRoots(compiledFunction) {
+    const roots = [];
+    for (let x = -10; x <= 10; x += 0.1) {
+        const y1 = compiledFunction.evaluate({ x });
+        const y2 = compiledFunction.evaluate({ x: x + 0.1 });
+        if (y1 * y2 < 0) {
+            roots.push(x);
         }
-        return peaks;
     }
+    return roots;
+}
 
-    // Gambar akar
-    function drawRoots(roots) {
-        ctx.fillStyle ='#00ffff';
-        roots.forEach(root => {
-            const canvasX = originX + originOffsetX + root * scale;
-            ctx.beginPath();
-            ctx.arc(canvasX, originY + originOffsetY, 5, 0, 2 * Math.PI);
-            ctx.fill();
-        });
+// Temukan titik potong y
+function findYIntercept(compiledFunction) {
+    return compiledFunction.evaluate({ x: 0 });
+}
+
+// Temukan titik puncak
+function findPeaks(derivativeFunction) {
+    const peaks = [];
+    for (let x = -10; x <= 10; x += 0.1) {
+        const slope1 = derivativeFunction.evaluate({ x });
+        const slope2 = derivativeFunction.evaluate({ x: x + 0.1 });
+        if (slope1 * slope2 < 0) {
+            const peakX = x + (slope1 / (slope1 - slope2)) * 0.1;
+            const peakY = compiledFunction.evaluate({ x: peakX });
+            peaks.push({ x: peakX, y: peakY });
+        }
     }
+    return peaks;
+}
 
-    // Gambar titik potong y
-    function drawYIntercept(yIntercept) {
-        const canvasY = originY + originOffsetY - yIntercept * scale;
-        ctx.fillStyle = '#00ff00';
+// Gambar akar
+function drawRoots(roots) {
+    ctx.fillStyle = '#00ffff'; // Warna untuk titik akar
+    roots.forEach(root => {
+        const canvasX = originX + originOffsetX + root * scale;
+        const canvasY = originY + originOffsetY; // Y = 0 untuk akar
         ctx.beginPath();
-        ctx.arc(originX + originOffsetX, canvasY, 5, 0, 2 * Math.PI);
+        ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
         ctx.fill();
+
+        // Tambahkan teks koordinat
+       
+    });
+}
+
+
+// Gambar titik potong y
+function drawYIntercept(yIntercept) {
+    const canvasY = originY + originOffsetY - yIntercept * scale;
+    ctx.fillStyle = '#00ff00'; // Warna untuk titik Y-intercept
+    ctx.beginPath();
+    ctx.arc(originX + originOffsetX, canvasY, 5, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Tambahkan teks koordinat
+   
+}
+
+
+// Gambar titik puncak
+function drawPeaks(peaks) {
+    ctx.fillStyle = '#ffff00'; // Warna untuk titik puncak
+    peaks.forEach(peak => {
+        const canvasX = originX + originOffsetX + peak.x * scale;
+        const canvasY = originY + originOffsetY - peak.y * scale;
+        ctx.beginPath();
+        ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
+        ctx.fill();
+
+      
+    });
+}
+
+
+canvas.addEventListener('mousedown', (event) => {
+    isDragging = true;
+    const rect = canvas.getBoundingClientRect();
+    dragStartX = event.clientX - rect.left;
+    dragStartY = event.clientY - rect.top;
+});
+
+canvas.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left; // Posisi mouse di canvas
+    const mouseY = event.clientY - rect.top;
+
+    // Transformasi mouse ke koordinat grafik
+    const graphX = (mouseX - originX - originOffsetX) / scale;
+    const graphY = (originY + originOffsetY - mouseY) / scale;
+
+    // Bersihkan canvas dan gambar ulang grafik
+    ctx.clearRect(0, 0, width, height);
+    drawAxes();
+    animateGraph();
+
+    // Gabungkan semua titik penting dengan label
+    const points = [
+        ...roots.map(x => ({ x, y: 0, label: "Titik Potong X" })), // Akar
+        { x: 0, y: yIntercept, label: "Titik Potong Y" },           // Titik potong Y
+        ...peaks.map(peak => ({ ...peak, label: "Titik Puncak" })) // Titik puncak
+    ];
+
+    if (isDragging) {
+        const currentX = mouseX;
+        const currentY = mouseY;
+
+        const deltaX = currentX - dragStartX;
+        const deltaY = currentY - dragStartY;
+
+        originOffsetX += deltaX;
+        originOffsetY += deltaY;
+
+        dragStartX = currentX;
+        dragStartY = currentY;
+
+        ctx.clearRect(0, 0, width, height);
+        drawAxes();
+        animateGraph();
+        return; // Tidak perlu melanjutkan ke pemeriksaan koordinat
     }
 
-    // Gambar titik puncak
-    function drawPeaks(peaks) {
-        ctx.fillStyle = '#ffff00';
-        peaks.forEach(peak => {
-            const canvasX = originX + originOffsetX + peak.x * scale;
-            const canvasY = originY + originOffsetY - peak.y * scale;
+    // Periksa apakah mouse dekat dengan titik
+    for (const point of points) {
+        const canvasX = originX + originOffsetX + point.x * scale;
+        const canvasY = originY + originOffsetY - point.y * scale;
+
+        const distance = Math.sqrt((mouseX - canvasX) ** 2 + (mouseY - canvasY) ** 2);
+        if (distance <= 10) { // Jika dekat titik (toleransi 10px)
+            // Tampilkan koordinat titik dan label
+            ctx.fillStyle = '#FFFFFF'; // Warna teks
+            ctx.font = 'bold 14px Arial'; // Gaya teks
+            ctx.fillText(`${point.label} (${point.x.toFixed(2)}, ${point.y.toFixed(2)})`, canvasX + 10, canvasY - 10);
+
+            // Gambar lingkaran kecil di titik
+            ctx.fillStyle = '#ff0000'; // Warna titik
             ctx.beginPath();
             ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
             ctx.fill();
-        });
+            return; // Hentikan pengecekan jika sudah menemukan titik dekat
+        }
     }
 
-    canvas.addEventListener('mousedown', (event) => {
-        isDragging = true;
-        const rect = canvas.getBoundingClientRect();
-        dragStartX = event.clientX - rect.left;
-        dragStartY = event.clientY - rect.top;
-    });
-    
-    canvas.addEventListener('mousemove', (event) => {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = event.clientX - rect.left;
-        const mouseY = event.clientY - rect.top;
-    
-        // Jika sedang dragging, pindahkan offset
-        if (isDragging) {
-            const currentX = mouseX;
-            const currentY = mouseY;
-    
-            const deltaX = currentX - dragStartX;
-            const deltaY = currentY - dragStartY;
-    
-            originOffsetX += deltaX;
-            originOffsetY += deltaY;
-    
-            dragStartX = currentX;
-            dragStartY = currentY;
-    
-            ctx.clearRect(0, 0, width, height);
-            drawAxes();
-            animateGraph();
-            return; // Tidak perlu melanjutkan ke pemeriksaan koordinat
+    // Periksa apakah mouse dekat dengan kurva
+    for (let x = -10; x <= 10; x += 0.1) { // Iterasi sepanjang kurva
+        const y = compiledFunction.evaluate({ x });
+        const canvasX = originX + originOffsetX + x * scale;
+        const canvasY = originY + originOffsetY - y * scale;
+
+        const distance = Math.sqrt((mouseX - canvasX) ** 2 + (mouseY - canvasY) ** 2);
+        if (distance <= 5) { // Jika dekat kurva (toleransi 5px)
+            // Tampilkan koordinat di lokasi kursor
+            ctx.fillStyle = '#fff'; // Warna teks
+            ctx.font = '12px Arial'; // Gaya teks
+            ctx.fillText(`(${graphX.toFixed(2)}, ${graphY.toFixed(2)})`, mouseX + 10, mouseY - 10);
+
+            // Gambar lingkaran kecil untuk penanda
+            ctx.fillStyle = '#ff0000'; // Warna penanda
+            ctx.beginPath();
+            ctx.arc(mouseX, mouseY, 3, 0, 2 * Math.PI); // Lingkaran kecil di lokasi kursor
+            ctx.fill();
+            return; // Hentikan pengecekan jika dekat dengan kurva
         }
-    
-        // Periksa apakah mouse dekat dengan titik
-        const point = isCloseToPoint(mouseX, mouseY, [
-            ...roots.map(x => ({ x, y: 0 })), // Titik akar
-            { x: 0, y: yIntercept }, // Titik potong y
-            ...peaks // Titik puncak
-        ]);
-    
-        if (point) {
-            // Tampilkan koordinat titik pada posisi tetap di bawah canvas
-            coordinatesDiv.innerText = `Koordinat: (x: ${point.x.toFixed(2)}, y: ${point.y.toFixed(2)})`;
-            return; // Jika titik ditemukan, abaikan pemeriksaan kurva
-        }
-    
-        // Periksa apakah mouse dekat dengan kurva
-        const curvePoint = isCloseToCurve(mouseX, mouseY);
-        if (curvePoint) {
-            // Tampilkan koordinat kurva pada posisi dinamis mengikuti mouse
-            coordinatesDiv.innerText = `Koordinat: (x: ${curvePoint.x.toFixed(2)}, y: ${curvePoint.y.toFixed(2)})`;
-            return;
-        }
-    
-        // Jika tidak menyentuh apa pun, kosongkan koordinat
-        coordinatesDiv.innerText = 'Koordinat: (x: -, y: -)';
-    });
-    
-    canvas.addEventListener('mouseup', () => {
-        isDragging = false;
-    });
-    
-    canvas.addEventListener('mouseleave', () => {
-        isDragging = false;
-    });
-    
-    
-    
+    }
+});
+
+
+
+canvas.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+canvas.addEventListener('mouseleave', () => {
+    isDragging = false;
+});
 
 
 canvas.addEventListener('mouseup', () => isDragging = false);
 canvas.addEventListener('mouseleave', () => isDragging = false);
 
-
-
 canvas.addEventListener('wheel', (event) => {
     event.preventDefault(); // Mencegah scrolling halaman saat menggunakan wheel
 
-    // Deteksi arah scroll: event.deltaY > 0 untuk zoom out, < 0 untuk zoom in
-    if (event.deltaY < 0) {
-        // Zoom In
-        if (scale < maxScale) {
-            scale *= 1.2;
-        }
-    } else {
-        // Zoom Out
-        if (scale > minScale) {
-            scale /= 1.2;
-        }
-    }
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left; // Posisi mouse di canvas
+    const mouseY = event.clientY - rect.top;
 
-    // Perbarui grafik setelah zoom
+    // Transformasi mouse ke koordinat grafik
+    const graphX = (mouseX - originX - originOffsetX) / scale;
+    const graphY = (mouseY - originY - originOffsetY) / scale;
+
+    // Deteksi arah zoom: event.deltaY > 0 untuk zoom out, < 0 untuk zoom in
+    const zoomFactor = event.deltaY < 0 ? 1.2 : 1 / 1.2; // Zoom in atau out
+    const newScale = Math.min(Math.max(scale * zoomFactor, minScale), maxScale); // Batas zoom
+
+    // Perbarui offset agar zoom mengikuti kursor
+    originOffsetX += (graphX * scale - graphX * newScale);
+    originOffsetY += (graphY * scale - graphY * newScale);
+
+    // Perbarui skala
+    scale = newScale;
+
+    // Gambarkan ulang grafik
     ctx.clearRect(0, 0, width, height);
     drawAxes();
     animateGraph();
 });
-  
+
+
 
 function isCloseToPoint(mouseX, mouseY, points, tolerance = 10) {
     for (const point of points) {
@@ -859,25 +874,26 @@ function isCloseToPoint(mouseX, mouseY, points, tolerance = 10) {
 
         const distance = Math.sqrt((mouseX - canvasX) ** 2 + (mouseY - canvasY) ** 2);
         if (distance <= tolerance) {
-            return point; // Jika dekat, kembalikan koordinat titik
+            return true; // Mouse dekat dengan titik
         }
     }
-    return null; // Tidak dekat dengan titik manapun
+    return false; // Mouse tidak dekat dengan titik
 }
 
 
-function isCloseToCurve(mouseX, mouseY, tolerance = 3) {
-    // Gunakan interval yang lebih rapat untuk mendeteksi titik kurva
-    for (let x = -10; x <= 10; x += 0.05) { // Interval yang lebih rapat
-        const y = compiledFunction.evaluate({ x });
+
+function isCloseToCurve(mouseX, mouseY, tolerance = 5) {
+    for (let x = -10; x <= 10; x += 0.1) { // Iterasi sepanjang kurva
+        const y = compiledFunction.evaluate({ x }); // Hitung nilai Y untuk X tertentu
         const canvasX = originX + originOffsetX + x * scale;
         const canvasY = originY + originOffsetY - y * scale;
 
+        // Hitung jarak antara mouse dan titik pada kurva
         const distance = Math.sqrt((mouseX - canvasX) ** 2 + (mouseY - canvasY) ** 2);
         if (distance <= tolerance) {
-            return { x, y };
+            return true; // Mouse dekat dengan kurva
         }
     }
-    return null;
+    return false; // Mouse tidak dekat dengan kurva
 }
 

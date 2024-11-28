@@ -7,10 +7,11 @@ body {
     height: 100vh;
     position: relative;
     color: white;
-    /* Teks tetap putih */
 }
 
-
+:root {
+    --white: #fff;
+}
 
 #overlay {
     position: fixed;
@@ -19,15 +20,21 @@ body {
     width: 100%;
     height: 100%;
     background: linear-gradient(45deg, #000, #001f4d);
-    /* Efek gradasi gelap */
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    /* Pastikan di atas semua konten */
     animation: fadeInOverlay 0.5s ease-in-out;
-    /* Animasi muncul */
     transition: opacity 0.5s ease-in-out;
+}
+
+.fungsi-kuadrat1 {
+    font-size: 18px;
+    font-weight: lighter;
+}
+
+.kuadrat {
+    color: var(--primary-blue);
 }
 
 /* Animasi kemunculan overlay */
@@ -200,7 +207,7 @@ audio {
     /* Menyusun elemen di tengah secara horizontal */
     height: 100vh;
     /* Membuat kontainer memenuhi tinggi layar */
-    padding-top: 100px;
+    padding-top: 50px;
     /* Memberikan jarak lebih banyak dari bagian atas */
     text-align: center;
     /* Menyusun teks di tengah */
@@ -226,28 +233,29 @@ audio {
 
 #explore-container h1 {
     font-size: 4rem;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     letter-spacing: 1px;
     font-weight: bold;
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 1);
     text-transform: uppercase;
 }
 
-.quad1 {
-    color: white;
-    /* Warna putih untuk "Quad" */
+
+:root {
+    --primary-blue: #3498db;
+    --secondary-dark: #001aff;
 }
 
 .calc1 {
-    color: #3498db;
+    color: var(--primary-blue);
     /* Warna biru untuk "Calc" */
 }
 #explore-button {
     padding: 15px 30px;
-    color: white;
+    color: var(--white);
     font-size: 1.5rem;
     font-weight: bold;
-    background-color: #3498db;
+    background-color: var(--primary-blue);
     /* Warna biru untuk tombol */
     border: none;
     border-radius: 10px;
@@ -259,8 +267,9 @@ audio {
     /* Efek transisi pada hover */
 }
 
+
 #explore-button:hover {
-    background-color: #001aff;
+    background-color: var(--secondary-dark);
     /* Warna biru lebih gelap saat hover */
     transform: scale(1.05);
     /* Efek pembesaran tombol saat hover */
@@ -351,10 +360,7 @@ audio {
     width: 200%;
     height: 200%;
     background:
-        radial-gradient(2px 2px at 10% 20%, #fff, transparent),
-        radial-gradient(1.5px 1.5px at 30% 40%, #fff, transparent),
-        radial-gradient(3px 3px at 50% 60%, #fff, transparent),
-        radial-gradient(1px 1px at 70% 80%, #fff, transparent),
+     
         radial-gradient(2.5px 2.5px at 90% 10%, #fff, transparent),
         radial-gradient(1px 1px at 15% 85%, #fff, transparent),
         radial-gradient(1.5px 1.5px at 85% 15%, #fff, transparent),
@@ -391,7 +397,6 @@ audio {
     height: 100%;
     background:
         radial-gradient(10px 10px at 30% 60%, rgba(255, 255, 255, 1), transparent),
-        radial-gradient(15px 15px at 50% 40%, rgba(255, 255, 255, 0.9), transparent),
         radial-gradient(20px 20px at 70% 80%, rgba(255, 255, 255, 0.95), transparent),
         radial-gradient(25px 25px at 90% 10%, rgba(255, 255, 255, 1), transparent);
     z-index: -2;
@@ -429,6 +434,29 @@ nav {
     transform: translateY(0);
     transition: transform 0.5s ease-in-out;
 }
+
+nav a {
+    color: var(--white);
+    margin-right: 40px;
+    text-decoration: none;
+    font-weight: lighter;
+    font-size: 1 rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--primary-blue);
+}
+
+nav.hidden {
+    transform: translateY(-100%);
+    /* Navigasi menghilang */
+}
+
+#menu-toggle {
+    display: none; 
+}
+
 .section-divider {
     border: 0;
     height: 2px;
@@ -452,8 +480,8 @@ nav {
 }
 
 .soal-button {
-    background-color: #3498db;
-    color: white;
+    background-color: var(--primary-blue);
+    color: var(--white);
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
@@ -462,13 +490,18 @@ nav {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.soal-button:hover {
+    background-color: #2980b9;
+    transform: scale(1.05);
+}
+
 .soal-button.active {
     background-color: #2ecc71;
 }
 
-.soal-button:hover {
-    background-color: #2980b9;
-    transform: scale(1.05);
+.soal-button.active:hover {
+    background-color: #2ecc71;
+    transform: none;
 }
 
 /* Konten soal */
@@ -477,25 +510,18 @@ nav {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    color: #ffffff;
+    color: var(--white);
     font-size: 1.2rem;
     line-height: 1.6;
 }
 
-.quadnav {
-    color: white;
-    /* Warna putih untuk "Quad" */
-}
+
 
 .calcnav {
-    color: #3498db;
+    color: var(--primary-blue);
     /* Warna biru untuk "Calc" */
 }
 
-nav.hidden {
-    transform: translateY(-100%);
-    /* Navigasi menghilang */
-}
 
 .logo {
     display: flex;
@@ -509,43 +535,6 @@ nav.hidden {
     /* Otomatis sesuaikan lebar berdasarkan proporsi */
     transition: transform 0.3s ease;
     /* Animasi saat hover */
-}
-
-nav a {
-    color: white;
-    margin-right: 30px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-nav a:hover {
-    color: #3498db;
-    /* Warna hover */
-    transform: scale(1.1);
-    /* Sedikit memperbesar */
-}
-
-@media (max-width: 768px) {
-    nav {
-        flex-direction: column;
-        padding: 15px;
-    }
-
-    nav a {
-        margin: 10px 0;
-    }
-}
-
-
-.header-paused {
-    animation-play-state: paused !important;
-    /* Hentikan animasi */
-}
-
-.header-running {
-    animation-play-state: running !important;
 }
 
 header {
@@ -570,13 +559,10 @@ header {
 
 }
 
-.quad {
-    color: white;
-    /* Warna putih untuk "Quad" */
-}
+
 
 .calc {
-    color: #3498db;
+    color: var(--primary-blue);
     /* Warna biru untuk "Calc" */
 }
 
@@ -601,12 +587,11 @@ header {
     text-align: left;
     margin: 0 auto;
     max-width: 800px;
-    transition: all 0.3s ease-in-out;
 }
 
 .info-title {
     font-size: 2rem;
-    color: #3498db;
+    color: var(--primary-blue);
     margin-bottom: 15px;
     text-align: center;
 }
@@ -654,7 +639,7 @@ header p {
 }
 
 h2 {
-    color: #3498db;
+    color: var(--primary-blue);
     margin-bottom: 10px;
 }
 
@@ -668,8 +653,8 @@ ul {
     display: block;
     margin: 20px auto;
     padding: 15px 30px;
-    background-color: #3498db;
-    color: white;
+    background-color: var(--primary-blue);
+    color: var(--white);
     font-size: 1.5rem;
     border: none;
     border-radius: 5px;
@@ -678,7 +663,7 @@ ul {
 }
 
 #tombol-kuis:hover {
-    background-color: #001aff;
+    background-color: var(--secondary-dark);
     transform: scale(1.05);
 }
 
@@ -686,8 +671,8 @@ ul {
 .button {
     padding: 10px 20px;
     font-size: 15px;
-    color: white;
-    background-color: #3498db;
+    color: var(--white);
+    background-color: var(--primary-blue);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -695,7 +680,7 @@ ul {
 }
 
 .button:hover {
-    background-color: #001aff;
+    background-color: var(--secondary-dark);
 }
 
 .button:active {
@@ -706,7 +691,7 @@ ul {
     width: 10px;
     height: 10px;
     border: 3px solid transparent;
-    border-top: 3px solid white;
+    border-top: 3px solid var(--white);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     display: inline-block;
@@ -743,7 +728,7 @@ ul {
     padding: 10px 20px;
     font-size: 15px;
     cursor: pointer;
-    color: #fff;
+    color: var(--white);
     background-color: #dc3545; /* Warna merah */
     border: none;
     border-radius: 5px;
@@ -755,19 +740,16 @@ ul {
 .form-container2 input {
     margin: 5px 0 10px 0;
     background-color: transparent;
-    color: white;
+    color: var(--white);
     border-radius: 5px;
     font-size: 1.2rem;
-    /* Ukuran font input */
     padding: 10px;
-    /* Tambahkan jarak internal */
     border: 2px solid rgba(255, 255, 255,.2);
 
 }
 
 .form-container2 label {
     font-size: 1.2rem;
-    /* Teks label lebih besar */
     margin: 5px 0 10px 0;
     border-radius: 5px;
 }
@@ -795,15 +777,20 @@ ul {
     font-size: 1.1rem;
 }
 
-#grafikCanvas {
-    transition: opacity 0.5s ease;
-}
+
 
 #grafik h2 {
+    color: var(--white);
     font-size: 2rem;
-    color: #3498db;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 1);
+    letter-spacing: 1px;
+    font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
+}
+
+.fungsikuadrat {
+    color: var(--primary-blue);
 }
 
 .result-box {
@@ -813,10 +800,14 @@ ul {
 }
 
 #anggota h2 {
-    color: #3498db;
+    color: var(--primary-blue);
     margin-bottom: 40px;
     font-size: 2rem;
     text-align: center;
+}
+
+.partners {
+    color: var(--white);
 }
 
 .team-members {
@@ -846,7 +837,7 @@ ul {
     object-fit: cover;
     border-radius: 50%;
     margin-bottom: 10px;
-    border: 2px solid #3498db;
+    border: 2px solid var(--primary-blue);
     position: relative;
     top: 5px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -859,9 +850,8 @@ ul {
 
 .member-name {
     font-size: 1.3rem;
-    /* Ukuran font lebih besar */
     font-weight: bold;
-    /* Teks lebih tebal */
+    
 }
 
 .member-npm {
@@ -880,11 +870,11 @@ canvas {
 }
 
 canvas:hover {
-    border-color: #3498db;
+    color: var(--primary-blue);
     /* Perubahan warna bingkai saat hover */
-    box-shadow: 0 6px 16px rgba(0, 240, 236, 0.8);
+    box-shadow: 0 5px 14px rgba(0, 240, 236, 0.8);
     /* Bayangan lebih terang saat hover */
-    transform: scale(1.01);
+    transform: scale(1.005);
 }
 
 
@@ -900,15 +890,14 @@ canvas:hover {
 
 #about-us h2 {
     font-size: 2rem;
-    color: #3498db;
+    color: var(--white);
     margin-bottom: 20px;
 }
 
-#about-us h3 {
-    font-size: 2rem;
-    color: #3498db;
-    margin-bottom: 20px;
+.about {
+    color: var(--primary-blue)
 }
+
 
 .about-content {
     font-size: 1rem;
@@ -916,15 +905,40 @@ canvas:hover {
 }
 
 .about-logo {
-    width: 200px;
+    margin-right: 30px;
+    height: auto;
+    width: 150px;
     margin-bottom: 15px;
 }
 
+.separator {
+    width: 2px; /* Lebar garis */
+    height: 200px; /* Tinggi garis */
+    background: linear-gradient(to right, #3498db, #ffffff, #3498db);
+    margin-left: 20px;
+}
 
+.about-logo2 {
+    height: auto;
+    width: 200px;
+    margin-bottom: 5px;
+}
+
+.logoabout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
 
 .section-title {
-    font-size: 1.8rem;
+    font-size: 2rem;
+    color: var(--white);
     margin-bottom: 20px;
+}
+
+.social {
+    color: var(--primary-blue)
 }
 
 .team-instagram {
@@ -958,7 +972,7 @@ canvas:hover {
 
 .team-member a {
     text-decoration: none;
-    color: #3498db;
+    color: var(--primary-blue);
     font-size: 0.9rem;
     font-weight: bold;
 }
@@ -980,23 +994,6 @@ canvas:hover {
     transform: scale(1.1);
 }
 
-@media (max-width: 600px) {
-    .team-member p {
-        font-size: 0.9rem;
-    }
-
-    .team-member a {
-        font-size: 0.8rem;
-    }
-
-    .team-member img {
-        width: 40px;
-        height: 40px;
-    }
-}
-
-
-
 .contact-person {
     padding: 20px;
     /* Memberi jarak di dalam kotak */
@@ -1005,9 +1002,9 @@ canvas:hover {
 }
 
 .contact-person h3 {
-    font-size: 24px;
+    font-size: 2rem;
     /* Ukuran font untuk judul */
-    color: #3498db;
+    color: var(--primary-blue);
     /* Warna teks untuk judul */
     margin-bottom: 10px;
     /* Jarak bawah untuk judul */
@@ -1021,7 +1018,7 @@ canvas:hover {
 }
 
 .contact-person a {
-    color: #ffffff;
+    color: var(--white);
     text-decoration: none;
     /* Menghilangkan garis bawah */
 }
@@ -1029,7 +1026,7 @@ canvas:hover {
 .contact-person a:hover {
     text-decoration: underline;
     /* Menambahkan garis bawah saat mouse diarahkan */
-    color: #3498db;
+    color: var(--primary-blue);
     /* Mengubah warna tautan saat hover */
 }
 
@@ -1052,4 +1049,224 @@ footer {
 }
 .team {
     font-weight: bold;
+}
+
+/* Untuk layar dengan lebar maksimum 768px (tablet/ponsel) */
+@media (max-width: 768px) {
+    /* Tombol Hamburger */
+    #menu-toggle {
+        margin-top: 15px;
+        margin-right: 40px;
+        position: relative;
+        width: 30px;
+        height: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 11; /* Pastikan tombol ada di atas */
+    }
+
+    #menu-toggle .hamburger {
+        width: 100%;
+        height: 3px;
+        background-color: #fff;
+        position: relative;
+        transition: all 0.3s ease-in-out;
+    }
+
+    #menu-toggle .hamburger::before,
+    #menu-toggle .hamburger::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        background-color: #fff;
+        transition: all 0.3s ease-in-out;
+    }
+
+    #menu-toggle .hamburger::before {
+        top: -8px;
+    }
+
+    #menu-toggle .hamburger::after {
+        top: 8px;
+    }
+
+    /* Transformasi Tombol menjadi "X" */
+    #menu-toggle.active .hamburger {
+        background-color: transparent;
+    }
+
+    #menu-toggle.active .hamburger::before {
+        transform: rotate(45deg);
+        top: 0;
+    }
+
+    #menu-toggle.active .hamburger::after {
+        transform: rotate(-45deg);
+        top: 0;
+    }
+
+    /* Navigasi Tirai */
+    #nav-links {
+        position: absolute;
+        top: 50px; /* Tinggi navbar */
+        left: 0;
+        width: 100%;
+        background: rgba(26, 0, 36, 0.594); /* Transparansi untuk melihat efek blur */
+        backdrop-filter: blur(10px); /* Efek blur */
+        overflow: hidden;
+        max-height: 0; /* Awal tertutup */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: max-height 0.5s ease-in-out; /* Animasi buka/tutup */
+    }
+
+    #nav-links a {
+        color: var(--white);
+        text-decoration: none;
+        padding: 15px 20px;
+        width: 100%;
+        text-align: center;
+        transition: background-color 0.3s ease;
+    }
+
+    #nav-links a:hover {
+        color: var(--primary-blue);
+    }
+
+    /* Kelas saat navbar terbuka */
+    #nav-links.nav-open {
+        max-height: 300px; /* Sesuaikan tinggi saat terbuka */
+    }
+
+
+    /* Header responsif */
+    header {
+        padding: 20px;
+    }
+
+    .header-title {
+        font-size: 2.5rem; /* Sesuaikan ukuran font */
+    }
+
+    .header-subtitle {
+        font-size: 1.5rem;
+    }
+
+    .header-quote {
+        font-size: 1.2rem;
+    }
+
+    /* Gaya untuk bagian overlay */
+    #overlay {
+        padding: 10px;
+    }
+
+    #explore-container {
+        padding-top: 50px;
+    }
+
+    .logoquadcalc {
+        max-width: 200px; /* Ukuran logo lebih kecil */
+        margin-bottom: 10px;
+    }
+
+    #explore-button {
+        font-size: 1.2rem;
+        padding: 10px 20px;
+    }
+
+    /* Tata letak kalkulator lebih ringkas */
+    .form-container2 {
+        flex-direction: column; /* Ubah dari horizontal ke vertikal */
+        gap: 5px;
+    }
+
+    .form-container2 input {
+        width: 90%; /* Isi hampir seluruh lebar layar */
+        font-size: 1rem; /* Ukuran teks lebih kecil */
+    }
+
+    .form-container2 button {
+        font-size: 1rem;
+        width: 30%;
+    }
+
+    canvas {
+        width: 100%; /* Buat canvas menyesuaikan lebar layar */
+        height: auto; /* Pertahankan rasio aspek */
+    }
+
+    /* Tampilan tim lebih rapat */
+    .team-member p {
+        font-size: 0.9rem;
+    }
+
+    .team-member a {
+        font-size: 0.8rem;
+    }
+
+    .team-member img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .member-photo {
+        width: 100px; /* Ukuran lebih kecil untuk foto anggota */
+        height: 120px;
+    }
+
+    .member {
+        font-size: 0.9rem; /* Ukuran teks lebih kecil */
+    }
+
+    /* Teks dan jarak pada setiap section */
+    section {
+        padding: 15px;
+        margin: 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Untuk layar lebih kecil dari 480px (ponsel kecil) */
+@media (max-width: 480px) {
+    .header-title {
+        font-size: 2rem;
+    }
+
+    .header-subtitle {
+        font-size: 1.2rem;
+    }
+
+    .header-quote {
+        font-size: 1rem;
+    }
+
+    nav a {
+        font-size: 0.9rem;
+    }
+
+    .button, #explore-button {
+        font-size: 1rem;
+        padding: 10px 15px;
+    }
+
+    canvas {
+        width: 100%;
+        height: auto; /* Tetapkan tinggi spesifik untuk layar kecil */
+    }
+
+    .result-box {
+        font-size: 0.8rem; /* Teks lebih kecil untuk hasil */
+    }
+
+    .logoabout {
+        gap: 5px;
+    }
 }

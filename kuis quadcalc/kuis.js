@@ -455,10 +455,6 @@ function showResults() {
 
 const toggleAllSoundsButton = document.getElementById('toggle-all-sounds');
 
-// Ambil elemen audio
-
-
-    
 }
 
 // Mulai kuis

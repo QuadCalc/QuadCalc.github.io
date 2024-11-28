@@ -40,12 +40,16 @@ body {
     z-index: -1;
 }
 
+:root {
+    --white: #fff;
+}
+
 #quiz-container {
-    color: white;
+    color: var(--white);
 }
 
 .quiz-container {
-    background: white;
+    background: var(--white);
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -63,7 +67,7 @@ button {
     padding: 10px 20px;
     font-size: 16px;
     background: #007bff;
-    color: white;
+    color: var(--white);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -85,9 +89,13 @@ input[type="radio"] {
     margin-right: 10px;
 }
 
+:root {
+    --primary-blue: #3498db;
+}
+
 #quiz-section {
     background: rgba(0, 0, 0, 0.5);
-    color: #3498db;
+    color: var(--primary-blue);
     padding: 20px;
     margin: 20px;
     text-align: center;
@@ -112,8 +120,8 @@ input[type="radio"] {
 
 #next-question {
     padding: 10px 20px;
-    background-color: #3498db;
-    color: white;
+    background-color: var(--primary-blue);
+    color: var(--white);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -124,8 +132,13 @@ input[type="radio"] {
     background-color: #0056b3;
 }
 
+#volume-control-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
 #quiz-result {
-    color: white;
+    color: var(--white);
     font-size: 1.2rem;
     text-align: center;
     opacity: 0;
@@ -150,7 +163,7 @@ input[type="radio"] {
 
 #result-gif {
     display: none; /* GIF tersembunyi di awal */
-    max-width: 50%; /* Batasi ukuran GIF */
+    width: 50%; /* Batasi ukuran GIF */
     height: auto; /* Jaga proporsi */
     margin: 20px auto; /* Jarak atas dan tengah */
     opacity: 0;
@@ -358,14 +371,14 @@ input[type="radio"] {
 .correct {
     background-color: green; /* Hijau untuk jawaban benar */
     border-radius: 5px;
-    color: white;
+    color: var(--white);
     transition: background-color 0.5s ease;
 }
 
 .incorrect {
     background-color: red; /* Merah untuk jawaban salah */
     border-radius: 5px;
-    color: white;
+    color: var(--white);
     transition: background-color 0.5s ease;
 }
 
@@ -388,7 +401,7 @@ input[type="radio"] {
 }
 
 #answer-feedback{
-    color: white;
+    color: var(--white);
     font-size: large;
 }
 
@@ -415,7 +428,7 @@ input[type="radio"] {
 
 .loading-spinner {
     border: 4px solid rgba(255, 255, 255, 0.3);
-    border-top: 4px solid white;
+    border-top: 4px solid var(--white);
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -431,8 +444,8 @@ input[type="radio"] {
 
 /* Tampilan tombol */
 #continue-button {
-    background-color: #3498db; /* Abu gelap */
-    color: white;
+    background-color: var(--primary-blue); /* Abu gelap */
+    color: var(--white);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -523,4 +536,5 @@ input[type="radio"] {
     #volume-control {
         width: 100%; /* Lebar slider penuh pada layar kecil */
     }
+
 }
