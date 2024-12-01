@@ -174,6 +174,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+function isMobileDevice() {
+    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+
 if (functionInput) {
     functionInput.value = ''; // Set input value to empty string
     functionInput.placeholder = 'ax^2 + bx + c';
@@ -728,7 +733,11 @@ function drawRoots(roots) {
         ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
         ctx.fill();
 
-        // Tambahkan teks koordinat
+        if (isMobileDevice()) {
+            ctx.fillStyle = '#fff'; // Warna teks
+            ctx.font = '16px Arial'; // Gaya teks
+            ctx.fillText(`Akar (${root.toFixed(2)}, 0)`, canvasX + 10, canvasY - 10);
+        }
        
     });
 }
@@ -736,13 +745,18 @@ function drawRoots(roots) {
 
 // Gambar titik potong y
 function drawYIntercept(yIntercept) {
+    const canvasX = originX + originOffsetX;
     const canvasY = originY + originOffsetY - yIntercept * scale;
     ctx.fillStyle = '#00ff00'; // Warna untuk titik Y-intercept
     ctx.beginPath();
     ctx.arc(originX + originOffsetX, canvasY, 5, 0, 2 * Math.PI);
     ctx.fill();
 
-    // Tambahkan teks koordinat
+    if (isMobileDevice()) {
+        ctx.fillStyle = '#fff'; // Warna teks
+        ctx.font = '16px Arial'; // Gaya teks
+        ctx.fillText(`Titik Potong Y (0, ${yIntercept.toFixed(2)})`, canvasX + 10, canvasY - 10);
+    }
    
 }
 
@@ -757,7 +771,11 @@ function drawPeaks(peaks) {
         ctx.arc(canvasX, canvasY, 5, 0, 2 * Math.PI);
         ctx.fill();
 
-      
+        if (isMobileDevice()) {
+            ctx.fillStyle = '#fff'; // Warna teks
+            ctx.font = '16px Arial'; // Gaya teks
+            ctx.fillText(`Titik Puncak (${peak.x.toFixed(2)}, ${peak.y.toFixed(2)})`, canvasX + 10, canvasY - 10);
+        }
     });
 }
 
@@ -785,7 +803,7 @@ canvas.addEventListener('mousemove', (event) => {
 
     // Gabungkan semua titik penting dengan label
     const points = [
-        ...roots.map(x => ({ x, y: 0, label: "Titik Potong X" })), // Akar
+        ...roots.map(x => ({ x, y: 0, label: "Akar" })), // Akar
         { x: 0, y: yIntercept, label: "Titik Potong Y" },           // Titik potong Y
         ...peaks.map(peak => ({ ...peak, label: "Titik Puncak" })) // Titik puncak
     ];
@@ -930,3 +948,91 @@ function isCloseToCurve(mouseX, mouseY, tolerance = 5) {
     return false; // Mouse tidak dekat dengan kurva
 }
 
+// Variabel untuk sentuhan
+let touchStartDist = 0;
+let touchStartOffsetX = 0;
+let touchStartOffsetY = 0;
+let isDraggingTouch = false;
+
+// Fungsi untuk mendapatkan posisi sentuh
+function getTouchPosition(event, touchIndex = 0) {
+    const rect = canvas.getBoundingClientRect();
+    const touch = event.touches[touchIndex];
+    return {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+    };
+}
+
+// Event: Mulai sentuhan
+canvas.addEventListener('touchstart', (event) => {
+    if (event.touches.length === 2) {
+        // Pinch-to-zoom dimulai
+        const touch1 = getTouchPosition(event, 0);
+        const touch2 = getTouchPosition(event, 1);
+        touchStartDist = Math.sqrt(
+            Math.pow(touch2.x - touch1.x, 2) + Math.pow(touch2.y - touch1.y, 2)
+        );
+    } else if (event.touches.length === 1) {
+        // Drag dimulai
+        const touch = getTouchPosition(event);
+        touchStartOffsetX = touch.x;
+        touchStartOffsetY = touch.y;
+        isDraggingTouch = true;
+    }
+});
+
+// Event: Sentuhan bergerak
+canvas.addEventListener('touchmove', (event) => {
+    event.preventDefault();
+
+    if (event.touches.length === 2) {
+        // Pinch-to-zoom
+        const touch1 = getTouchPosition(event, 0);
+        const touch2 = getTouchPosition(event, 1);
+        const currentDist = Math.sqrt(
+            Math.pow(touch2.x - touch1.x, 2) + Math.pow(touch2.y - touch1.y, 2)
+        );
+        const zoomFactor = currentDist / touchStartDist;
+
+        // Perbarui skala dan posisi
+        const newScale = Math.min(Math.max(scale * zoomFactor, minScale), maxScale);
+        const graphCenterX = (touch1.x + touch2.x) / 2;
+        const graphCenterY = (touch1.y + touch2.y) / 2;
+        const graphX = (graphCenterX - originX - originOffsetX) / scale;
+        const graphY = (originY + originOffsetY - graphCenterY) / scale;
+
+        originOffsetX += (graphX * scale - graphX * newScale);
+        originOffsetY += (graphY * scale - graphY * newScale);
+        scale = newScale;
+
+        touchStartDist = currentDist; // Update jarak untuk sentuhan berikutnya
+
+        // Gambar ulang
+        ctx.clearRect(0, 0, width, height);
+        drawAxes();
+        animateGraph();
+    } else if (event.touches.length === 1 && isDraggingTouch) {
+        // Drag grafik
+        const touch = getTouchPosition(event);
+        const deltaX = touch.x - touchStartOffsetX;
+        const deltaY = touch.y - touchStartOffsetY;
+
+        originOffsetX += deltaX;
+        originOffsetY += deltaY;
+
+        touchStartOffsetX = touch.x;
+        touchStartOffsetY = touch.y;
+
+        // Gambar ulang
+        ctx.clearRect(0, 0, width, height);
+        drawAxes();
+        animateGraph();
+    }
+});
+
+// Event: Sentuhan berakhir
+canvas.addEventListener('touchend', () => {
+    isDraggingTouch = false;
+    touchStartDist = 0;
+});
