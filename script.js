@@ -346,23 +346,22 @@ const maxScale = 99; // Skala maksimum untuk zoom in
 function drawAxes() {
     ctx.clearRect(0, 0, width, height); // Bersihkan canvas
 
-    // Warna grid
-    ctx.strokeStyle = '#fff';
+    ctx.strokeStyle = '#fff'; // Warna grid
     ctx.lineWidth = 0.5;
 
     // Tentukan interval grid berdasarkan skala
     let baseInterval = 1;
-    
-    if (scale < 4) baseInterval = 20; // Interval lebih besar untuk skala kecil
+    if (scale < 4) baseInterval = 20;
     else if (scale < 10) baseInterval = 10;
     else if (scale < 20) baseInterval = 5;
     else if (scale < 40) baseInterval = 2;
     else if (scale < 80) baseInterval = 1;
     else if (scale < 100) baseInterval = 0.5;
-    const startX = Math.floor((-originX - originOffsetX) / scale);
-    const endX = Math.ceil((width - originX - originOffsetX) / scale);
-    const startY = Math.floor((originY + originOffsetY - height) / scale);
-    const endY = Math.ceil((originY + originOffsetY) / scale);
+
+    const startX = Math.floor((-originX - originOffsetX) / (scale * baseInterval)) * baseInterval;
+    const endX = Math.ceil((width - originX - originOffsetX) / (scale * baseInterval)) * baseInterval;
+    const startY = Math.floor((originY + originOffsetY - height) / (scale * baseInterval)) * baseInterval;
+    const endY = Math.ceil((originY + originOffsetY) / (scale * baseInterval)) * baseInterval;
 
     // Gambar garis vertikal grid
     for (let x = startX; x <= endX; x += baseInterval) {
@@ -395,6 +394,7 @@ function drawAxes() {
     ctx.moveTo(originX + originOffsetX, 0);
     ctx.lineTo(originX + originOffsetX, height);
     ctx.stroke();
+
 
     // Tampilkan label angka pada sumbu X
     ctx.font = '12px Arial';
@@ -434,7 +434,7 @@ function animateGraph() {
     ctx.beginPath();
     let started = false;
 
-    for (let x = startX; x <= animationX && x <= endX; x += 0.05) { // Sesuaikan interval x sesuai dengan skala
+    for (let x = startX; x <= animationX && x <= endX; x += 0.01) { // Sesuaikan interval x sesuai dengan skala
         const y = compiledFunction.evaluate({ x });
         const canvasX = originX + originOffsetX + x * scale;
         const canvasY = originY + originOffsetY - y * scale;
@@ -450,7 +450,7 @@ function animateGraph() {
 
     // Perbarui posisi animasi
     if (animationX < endX) {
-        animationX += 0.1; // Tingkatkan posisi animasi
+        animationX += 0.5; // Tingkatkan posisi animasi
         requestAnimationFrame(animateGraph); // Lanjutkan animasi
     } else {
         // Setelah selesai, tambahkan titik potong dan titik puncak
@@ -482,23 +482,25 @@ function drawGraph() {
         return;
     }
 
-    // Regex utama untuk format fungsi kuadrat
-    const regex = /([+-]?\d*\.?\d*)x\^2(?:\s*([+-]?\d*\.?\d*)x)?(?:\s*([+-]?\d*\.?\d*))?/;
+   // Normalisasi input untuk memastikan `-x` menjadi `-1x` dan `+x` menjadi `+1x`
+   let cleanedInput = input.replace(/\s+/g, ''); // Hilangkan spasi
+   cleanedInput = cleanedInput.replace(/(?<!\d)-x/g, '-1x'); // Ganti `-x` dengan `-1x`
+   cleanedInput = cleanedInput.replace(/(?<!\d)\+x/g, '+1x'); // Ganti `+x` dengan `+1x`
+   cleanedInput = cleanedInput.replace(/(?<=^|[-+])x/g, '1x'); // Ganti `x` di awal atau setelah operator dengan `1x`
 
-    // Regex untuk mendeteksi pola salah seperti '2x2'
-    const invalidPatternRegex = /\d+x\d+|x\^\d{2,}/;
+   // Regex utama untuk format fungsi kuadrat
+   const regex = /([+-]?\d*\.?\d*)x\^2(?:\s*([+-]?\d*\.?\d*)x)?(?:\s*([+-]?\d*\.?\d*))?/;
 
-    // Hilangkan spasi dari input
-    const cleanedInput = input.replace(/\s+/g, '');
-    const match = cleanedInput.match(regex);
+   // Regex untuk mendeteksi pola salah seperti '2x2'
+   const invalidPatternRegex = /\d+x\d+|x\^\d{2,}/;
 
-    // Validasi pola salah terlebih dahulu
-    if (invalidPatternRegex.test(cleanedInput) || !match) {
-        alert("Harap masukkan fungsi dalam format ax² + bx + c yang benar!");
-        button.classList.remove('loading');
-        spinner.remove();
-        return;
-    }
+   const match = cleanedInput.match(regex);
+
+   // Validasi pola salah terlebih dahulu
+   if (invalidPatternRegex.test(cleanedInput) || !match) {
+       alert("Harap masukkan fungsi dalam format ax² + bx + c yang benar!");
+       return;
+   }
 
 
     if (inputexpression === lastInputExpression) {
@@ -571,8 +573,19 @@ function drawGraph() {
     const yInterceptValue = yIntercept !== null ? yIntercept : 0;
 
     // Atur posisi agar fokus pada titik potong y
-    originOffsetX = 0; // Karena kita ingin x = 0 di tengah layar
-    originOffsetY = yInterceptValue * scale; // Fokuskan 
+    if (peaks.length > 0) {
+        const peakX = peaks[0].x;
+        const peakY = peaks[0].y;
+    
+        // Fokuskan grafik pada titik puncak
+        originOffsetX = -peakX * scale; // Pindahkan X agar titik puncak berada di tengah
+        originOffsetY = peakY * scale;  // Sesuaikan Y agar titik puncak berada di tengah
+    } else {
+        // Fallback jika tidak ada titik puncak ditemukan
+        originOffsetX = 0;
+        originOffsetY = 0;
+    }
+    
 
 
     // Mulai animasi
@@ -656,17 +669,34 @@ function calculateFunctionRange(func, minX, maxX, step) {
 
 
 // Temukan akar
-function findRoots(compiledFunction) {
+function findRoots(compiledFunction, step = 0.05, tolerance = 0.001) {
     const roots = [];
-    for (let x = -10; x <= 10; x += 0.1) {
-        const y1 = compiledFunction.evaluate({ x });
-        const y2 = compiledFunction.evaluate({ x: x + 0.1 });
-        if (y1 * y2 < 0) {
-            roots.push(x);
+    let previousX = -100;
+    let previousY = compiledFunction.evaluate({ x: previousX });
+
+    for (let x = -100 + step; x <= 100; x += step) {
+        const currentY = compiledFunction.evaluate({ x });
+
+        // Check for a sign change
+        if (previousY * currentY < 0) {
+            // Refine root using linear interpolation
+            const refinedRoot = previousX - (previousY * (x - previousX)) / (currentY - previousY);
+
+            // Avoid duplicates based on tolerance
+            if (roots.length === 0 || Math.abs(refinedRoot - roots[roots.length - 1]) > tolerance) {
+                roots.push(refinedRoot);
+            }
         }
+
+        // Update for next iteration
+        previousX = x;
+        previousY = currentY;
     }
+
     return roots;
 }
+
+
 
 // Temukan titik potong y
 function findYIntercept(compiledFunction) {
@@ -676,11 +706,11 @@ function findYIntercept(compiledFunction) {
 // Temukan titik puncak
 function findPeaks(derivativeFunction) {
     const peaks = [];
-    for (let x = -10; x <= 10; x += 0.1) {
+    for (let x = -100; x <= 100; x += 0.01) {
         const slope1 = derivativeFunction.evaluate({ x });
-        const slope2 = derivativeFunction.evaluate({ x: x + 0.1 });
+        const slope2 = derivativeFunction.evaluate({ x: x + 0.01 });
         if (slope1 * slope2 < 0) {
-            const peakX = x + (slope1 / (slope1 - slope2)) * 0.1;
+            const peakX = x + (slope1 / (slope1 - slope2)) * 0.01;
             const peakY = compiledFunction.evaluate({ x: peakX });
             peaks.push({ x: peakX, y: peakY });
         }
@@ -761,8 +791,9 @@ canvas.addEventListener('mousemove', (event) => {
     ];
 
     if (isDragging) {
-        const currentX = mouseX;
-        const currentY = mouseY;
+        const rect = canvas.getBoundingClientRect();
+        const currentX = event.clientX - rect.left;
+        const currentY = event.clientY - rect.top;
 
         const deltaX = currentX - dragStartX;
         const deltaY = currentY - dragStartY;
@@ -774,9 +805,8 @@ canvas.addEventListener('mousemove', (event) => {
         dragStartY = currentY;
 
         ctx.clearRect(0, 0, width, height);
-        drawAxes();
-        animateGraph();
-        return; // Tidak perlu melanjutkan ke pemeriksaan koordinat
+        drawAxes(); // Pastikan grid dan sumbu diperbarui
+        animateGraph(); // Gambar ulang grafik
     }
 
     // Periksa apakah mouse dekat dengan titik
@@ -801,24 +831,34 @@ canvas.addEventListener('mousemove', (event) => {
     }
 
     // Periksa apakah mouse dekat dengan kurva
-    for (let x = -10; x <= 10; x += 0.1) { // Iterasi sepanjang kurva
+    let foundPoint = false; // Penanda jika titik ditemukan di kurva
+
+    // Tentukan rentang X sesuai viewport
+    const startX = Math.floor((-originX - originOffsetX) / scale) - 1;
+    const endX = Math.ceil((width - originX - originOffsetX) / scale) + 1;
+
+    // Iterasi sepanjang kurva
+    for (let x = startX; x <= endX; x += 0.01) { // Resolusi lebih tinggi untuk presisi
         const y = compiledFunction.evaluate({ x });
         const canvasX = originX + originOffsetX + x * scale;
         const canvasY = originY + originOffsetY - y * scale;
 
+        // Hitung jarak antara mouse dan titik pada kurva
         const distance = Math.sqrt((mouseX - canvasX) ** 2 + (mouseY - canvasY) ** 2);
         if (distance <= 5) { // Jika dekat kurva (toleransi 5px)
             // Tampilkan koordinat di lokasi kursor
             ctx.fillStyle = '#fff'; // Warna teks
             ctx.font = '12px Arial'; // Gaya teks
-            ctx.fillText(`(${graphX.toFixed(2)}, ${graphY.toFixed(2)})`, mouseX + 10, mouseY - 10);
+            ctx.fillText(`(${x.toFixed(2)}, ${y.toFixed(2)})`, canvasX + 10, canvasY - 10);
 
             // Gambar lingkaran kecil untuk penanda
             ctx.fillStyle = '#ff0000'; // Warna penanda
             ctx.beginPath();
-            ctx.arc(mouseX, mouseY, 3, 0, 2 * Math.PI); // Lingkaran kecil di lokasi kursor
+            ctx.arc(canvasX, canvasY, 3, 0, 2 * Math.PI); // Lingkaran kecil di lokasi titik
             ctx.fill();
-            return; // Hentikan pengecekan jika dekat dengan kurva
+
+            foundPoint = true; // Tandai bahwa titik ditemukan
+            break; // Hentikan iterasi setelah menemukan titik terdekat
         }
     }
 });
@@ -834,36 +874,29 @@ canvas.addEventListener('mouseleave', () => {
 });
 
 
-canvas.addEventListener('mouseup', () => isDragging = false);
-canvas.addEventListener('mouseleave', () => isDragging = false);
-
 canvas.addEventListener('wheel', (event) => {
-    event.preventDefault(); // Mencegah scrolling halaman saat menggunakan wheel
+    event.preventDefault();
 
     const rect = canvas.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left; // Posisi mouse di canvas
+    const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
 
-    // Transformasi mouse ke koordinat grafik
     const graphX = (mouseX - originX - originOffsetX) / scale;
     const graphY = (mouseY - originY - originOffsetY) / scale;
 
-    // Deteksi arah zoom: event.deltaY > 0 untuk zoom out, < 0 untuk zoom in
-    const zoomFactor = event.deltaY < 0 ? 1.2 : 1 / 1.2; // Zoom in atau out
-    const newScale = Math.min(Math.max(scale * zoomFactor, minScale), maxScale); // Batas zoom
+    const zoomFactor = event.deltaY < 0 ? 1.2 : 1 / 1.2;
+    const newScale = Math.min(Math.max(scale * zoomFactor, minScale), maxScale);
 
-    // Perbarui offset agar zoom mengikuti kursor
     originOffsetX += (graphX * scale - graphX * newScale);
     originOffsetY += (graphY * scale - graphY * newScale);
 
-    // Perbarui skala
     scale = newScale;
 
-    // Gambarkan ulang grafik
     ctx.clearRect(0, 0, width, height);
-    drawAxes();
+    drawAxes(); // Pastikan posisi grid dan sumbu diperbarui
     animateGraph();
 });
+
 
 
 

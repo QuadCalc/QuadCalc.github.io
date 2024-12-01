@@ -234,8 +234,6 @@ function loadQuestion() {
     
 }
 
-
-
 function disableOptions() {
     const answers = document.querySelectorAll("input[name='answer']");
     answers.forEach(answer => {
@@ -253,8 +251,6 @@ function getSelectedAnswer() {
     });
     return selected;
 }
-
-
 
 
 nextButton.addEventListener("click", () => {
